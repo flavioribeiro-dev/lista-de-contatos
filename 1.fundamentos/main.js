@@ -1,1 +1,0 @@
-console.log("Olá, tudo bem? Como vai?")
