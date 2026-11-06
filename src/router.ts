@@ -1,9 +1,6 @@
 import Router from "express";
 import { readFile, writeFile } from "node:fs/promises";
-// import { readFile, writeFile } from "node:fs/promises";
-// import path, { dirname } from "node:path";
-// import { constants } from "node:quic";
-// import { fileURLToPath } from "node:url";
+
 
 const dataSource = "./public/contatos.txt";
 let list:string[] = []
@@ -19,15 +16,20 @@ router.post('/contato', async (req, res) => {
     if(!nome || nome.length < 2) {
         return res.status(404).json({ error: "o nome precisa ter pelo menos 2 caracteres" });
     }
-    
     try {
         const data = await readFile(dataSource, { encoding: "utf8" })
-        list = data.split("\n")
     } catch (err) {}
     list.push(nome);
     await writeFile(dataSource, list.join('\n'));
-
     return res.status(201).json({ contato: nome });
 })
+
+router.get('/contatos', async (req, res) => {
+    const data = await readFile(dataSource, { encoding: "utf8" });
+    list = data.split('\n');
+
+    res.status(200).json({ list })    
+})
+
 
 export default router;
