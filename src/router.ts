@@ -1,7 +1,6 @@
 import Router from "express";
 import { readFile, writeFile } from "node:fs/promises";
 
-
 const dataSource = "./public/contatos.txt";
 let list:string[] = []
  
@@ -24,7 +23,7 @@ router.post('/contato', async (req, res) => {
     return res.status(201).json({ contato: nome });
 })
 
-router.get('/contatos', async (req, res) => {
+router.get('/contatos', async (req, res) => {   
     const data = await readFile(dataSource, { encoding: "utf8" });
     list = data.split('\n');
 
