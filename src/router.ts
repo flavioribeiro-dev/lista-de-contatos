@@ -10,6 +10,13 @@ router.get('/', (req, res) => {
     res.send('página inicial 231')
 })
 
+router.get('/contatos', async (req, res) => {   
+    const data = await readFile(dataSource, { encoding: "utf8" });
+    list = data.split('\n');
+
+    res.status(200).json({ list })    
+})
+
 router.post('/contato', async (req, res) => {
     const { nome } = req.body;
     if(!nome || nome.length < 2) {
@@ -20,14 +27,32 @@ router.post('/contato', async (req, res) => {
     } catch (err) {}
     list.push(nome);
     await writeFile(dataSource, list.join('\n'));
+
     return res.status(201).json({ contato: nome });
 })
 
-router.get('/contatos', async (req, res) => {   
-    const data = await readFile(dataSource, { encoding: "utf8" });
-    list = data.split('\n');
+router.delete('/contato', async (req, res) => {
+    const { nome } = req.query;
+    if(!nome) {
+        return res.json({ error: "precisa um nome para excluir" });
+    }
 
-    res.status(200).json({ list })    
+    try {
+        const data = await readFile(dataSource, { encoding: "utf8" });
+        list = data.split("\n");
+    } catch (err) {}
+    list = list.filter(item => {
+        if(item.toLocaleLowerCase() != nome.toLocaleString()) {
+            return true;
+        } else {
+            return false
+        }
+    })
+    // list = list.filter(item => item.toLocaleLowerCase() !== (nome as string).toLowerCase());    --- forma alternativa 
+    
+    await writeFile(dataSource, list.join("\n"));
+
+    res.json({ contato: nome })
 })
 
 
