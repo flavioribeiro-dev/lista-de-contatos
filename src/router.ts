@@ -1,6 +1,9 @@
 import Router from "express";
 import { readFile, writeFile } from "node:fs/promises";
-import { createContato, deleteContato, getContatos } from "./services/Contato.js";
+// import { createContato, deleteContato, getContatos } from "./services/Contato.js";
+import Contato from "./services/Contato.js";
+
+const contato = new Contato;
 
 const dataSource = "./public/contatos.txt";
 let list:string[] = []
@@ -12,8 +15,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/contatos', async (req, res) => {     
-    // Consultando todos os contatos no arquivo base
-    const result = await getContatos();
+    const result = await contato.getContatos();
     res.status(200).json({ result });    
 })
 
@@ -22,7 +24,7 @@ router.post('/contato', async (req, res) => {
     if(!nome || nome.length < 2) {
         return res.status(404).json({ error: "o nome precisa ter pelo menos 2 caracteres" });
     }
-    const result = await createContato(nome as string);
+    const result = await contato.createContato(nome as string);
     res.status(201).json({ contato: nome })
 })
 
@@ -31,8 +33,8 @@ router.delete('/contato', async (req, res) => {
     if(!nome) {
         return res.json({ error: "precisa um nome para excluir" });
     }
-    const result = await deleteContato(nome as string);
-    res.json({ contatos: result });
+    const result = await contato.deleteContato(nome)
+    res.status(205).json(result)
 })
 
 

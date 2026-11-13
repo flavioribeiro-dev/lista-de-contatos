@@ -1,37 +1,45 @@
+import { error } from "node:console";
 import { readFile, writeFile } from "node:fs/promises"
 
 const dataSource = "./public/contatos.txt"
 let list: string[] = [];
 
-export const getContatos = async () => {
-    try {
-        const data = await readFile(dataSource, { encoding: "utf8" });
-        list = data.split("\n");
-    } catch (err) {}
+class Contato {
+    constructor() {}
+    
+    async getContatos() {
+        try {
+            const data = await readFile(dataSource, { encoding: "utf8" });
+            if(data == "") return null
+            
+            list = data.split("\n")
+            return list;
+        } catch (err) {}
+    }
 
-    return list;
-}
+    async createContato(nome: string) {
+        try {
+            const data = await this.getContatos();
+            list: data ?? [];
+            list.push(nome)
+            
+            const result = await writeFile(dataSource, list.join("\n"));
+            return result;
+        } catch (err) {}
+    }
 
-export const createContato = async (nome: string) => {
-    try {
-        const list = await getContatos();
-        list.push(nome);
-    } catch (err) {}
-    const result = await writeFile(dataSource, list.join("\n"))
-    return result;
-}
-
-export const deleteContato = async (nome: string) => {
-    try {
-        const data = await getContatos();
-        list = data.filter(item => {
-        if(item.toLowerCase() != nome.toLowerCase()) {
-            return true;
-        } else {
-            return false
+    async deleteContato(nome: string) {
+        const data = await this.getContatos();
+        const list = data ?? [];
+        const result = list.filter(item => {
+            if(item.toLowerCase() !== nome.toLowerCase()) {
+                return true;
+            } else {
+                return false;
             }
         })
-        // list = list.filter(item => item.toLowerCase() !== (nome as string).toLowerCase());
-    } catch (err) {}
-    return await writeFile(dataSource, list.join("\n"));
+        return await writeFile(dataSource, result.join("\n"))
+    }
 }
+
+export default Contato;
