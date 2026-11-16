@@ -2,6 +2,7 @@ import "dotenv/config";
 import Express from "express";
 import helmet from "helmet";
 import router from "./router.js";
+import { privateRequest } from "./middlewares/auth.js";
 
 const server = Express();
 console.log("servidor rodando")
