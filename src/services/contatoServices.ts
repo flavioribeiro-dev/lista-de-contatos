@@ -4,7 +4,7 @@ import { readFile, writeFile } from "node:fs/promises"
 const dataSource = "./public/contatos.txt"
 let list: string[] = [];
 
-class Contato {
+class ContatoServices {
     constructor() {}
     
     async getContatos() {
@@ -42,4 +42,4 @@ class Contato {
     }
 }
 
-export default Contato;
+export default ContatoServices;
