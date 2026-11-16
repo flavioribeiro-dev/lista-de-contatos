@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { privateRequest } from "../middlewares/auth.js";
 import ContatoServices from "../services/contatoServices.js";
 
 const contatoServices = new ContatoServices;
@@ -17,7 +18,7 @@ router.get('/contatos', async (req, res) => {
     res.status(200).json({ result });    
 })
 
-router.post('/contato', async (req, res) => {
+router.post('/contato', privateRequest, async (req, res) => {
     const { nome } = req.body;
     if(!nome || nome.length < 2) {
         return res.status(404).json({ error: "o nome precisa ter pelo menos 2 caracteres" });
@@ -26,7 +27,7 @@ router.post('/contato', async (req, res) => {
     res.status(201).json({ contato: nome })
 })
 
-router.delete('/contato', async (req, res) => {
+router.delete('/contato', privateRequest,  async (req, res) => {
     const nome = req.body.nome;
     if(!nome) {
         return res.json({ error: "precisa um nome para excluir" });
